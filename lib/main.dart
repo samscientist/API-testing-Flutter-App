@@ -5,18 +5,18 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget { // MyApp은 StatelessWidget을 상속 이는 앱의 최상위 위젯
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('API Post Request'),
+  Widget build(BuildContext context) { // build 메소드에서는 위젯의 UI 정의
+    return MaterialApp( // MaterialApp 위젯은 Material Design 앱을 만드는 데 사용
+      home: Scaffold( // Scaffold는 기본적인 레이아웃을 제공
+        appBar: AppBar( // AppBar는 앱의 상단 바 정의
+          title: const Text('API Post Request'), // AppBar의 제목을 설정
         ),
-        body: const Center(
-          child: PostRequestForm(),
+        body: const Center( // Center 위젯은 자식 위젯을 화면 중앙에 배치
+          child: PostRequestForm(), // PostRequestForm 위젯을 화면 중앙에 배치
         ),
       ),
     );
@@ -27,58 +27,58 @@ class PostRequestForm extends StatefulWidget {
   const PostRequestForm({super.key});
 
   @override
-  _PostRequestFormState createState() => _PostRequestFormState();
+  _PostRequestFormState createState() => _PostRequestFormState(); // 새로운 상태 객체 생성
 }
 
-class _PostRequestFormState extends State<PostRequestForm> {
+class _PostRequestFormState extends State<PostRequestForm> { // _PostRequestFormState는 PostRequestForm의 상태 표현
   final _formKey = GlobalKey<FormState>();
-  final _urlController = TextEditingController(text: 'https://...');
-  final _bodyController = TextEditingController(text: '{\n    "contexts": [\n        "겨울"\n    ]\n}');
-  String? _responseBody;
-  bool _applyFormat = false;
-  bool _isLoading = false;
+  final _urlController = TextEditingController(text: 'https://...'); // URL을 입력받기 위한 컨트롤러
+  final _bodyController = TextEditingController(text: '{\n    "contexts": [\n        "겨울"\n    ]\n}'); // HTTP 요청 본문을 입력받기 위한 컨트롤러
+  String? _responseBody; // HTTP 응답 본문을 저장할 변수
+  bool _applyFormat = false; // 응답 본문을 서식에 맞게 표시할지 여부 결정하는 플래그
+  bool _isLoading = false; // HTTP 요청이 실행 중인지 여부 나타내는 플래그
 
-  Future<void> _sendPostRequest(String url, String body) async {
-    setState(() {
-      _isLoading = true;
+  Future<void> _sendPostRequest(String url, String body) async { // HTTP POST 요청 송신 및 응답 수신 메소드
+    setState(() { // 상태 변경
+      _isLoading = true; // 로딩 상태 시작
     });
     try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {"Content-Type": "application/json"},
-        body: body,
+      final response = await http.post( // HTTP POST 요청 송신 및 응답 수신
+        Uri.parse(url), // URL을 파싱
+        headers: {"Content-Type": "application/json"}, // 헤더 설정
+        body: body, // 요청 본문 설정
       );
-      setState(() {
-        _responseBody = response.body;
+      setState(() { // 상태 변경
+        _responseBody = response.body; // 응답 본문 저장
       });
-    } catch (e) {
-      showDialog(
+    } catch (e) { // 예외 처리
+      showDialog( // 대화 상자 표시
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Error'),
-          content: Text('An error occurred: $e'),
+          title: const Text('Error'), // 대화 상자의 제목 설정
+          content: Text('An error occurred: $e'), // 대화 상자의 내용 설정
         ),
       );
     } finally {
-      setState(() {
-        _isLoading = false;
+      setState(() { // 상태 변경
+        _isLoading = false; // 로딩 상태 종료
       });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { /// build 메소드에서는 위젯의 UI 정의
     return Form(
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+        children: <Widget>[ // 여러 자식 위젯 배열
           TextFormField(
             controller: _urlController,
             decoration: const InputDecoration(
               labelText: 'URL',
             ),
-            validator: (value) {
+            validator: (value) { // 유효성 검사
               if (value == null || value.isEmpty) {
                 return 'Please enter a URL';
               }
@@ -94,30 +94,30 @@ class _PostRequestFormState extends State<PostRequestForm> {
               keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
                 labelText: 'to Send',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(), // 외곽선 설정
               ),
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18), // 텍스트 스타일 설정
               scrollPhysics: const ScrollPhysics(), 
             ),
           ),
 
           ElevatedButton(
             onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                _sendPostRequest(_urlController.text, _bodyController.text);
+              if (_formKey.currentState?.validate() ?? false) { // 폼의 유효성 검사
+                _sendPostRequest(_urlController.text, _bodyController.text); // HTTP POST 요청 메소드 호출
               }
             },
-            child: const Text('Send POST Request'),
+            child: const Text('Send POST Request'), // 버튼의 텍스트 설정
           ),
           if (_isLoading)
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(), // 로딩 중일 경우 진행 표시기 표시
           if (_responseBody != null)
             SwitchListTile(
-              title: const Text('Apply Format'),
+              title: const Text('Apply Format'), // 레이블 텍스트 설정
               value: _applyFormat,
               onChanged: (bool value) {
-                setState(() {
-                  _applyFormat = value;
+                setState(() { // 상태 변경
+                  _applyFormat = value; // 서식 적용 여부 변경
                 });
               },
             ),
@@ -125,8 +125,8 @@ class _PostRequestFormState extends State<PostRequestForm> {
             Expanded(
               child: SingleChildScrollView(
                 child: _applyFormat
-                  ? Text(_responseBody!.replaceAll("\\n", "\n"))
-                  : Text(_responseBody!),
+                  ? Text(_responseBody!.replaceAll("\\n", "\n")) // 서식을 적용하여 응답 본문 표시
+                  : Text(_responseBody!), // 응답 본문 표시
               ),
             ),
         ],
