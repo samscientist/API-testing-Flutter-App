@@ -5,18 +5,18 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { // MyApp은 StatelessWidget을 상속 이는 앱의 최상위 위젯
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) { // build 메소드에서는 위젯의 UI 정의
-    return MaterialApp( // MaterialApp 위젯은 Material Design 앱을 만드는 데 사용
-      home: Scaffold( // Scaffold는 기본적인 레이아웃을 제공
-        appBar: AppBar( // AppBar는 앱의 상단 바 정의
-          title: const Text('API Post Request'), // AppBar의 제목을 설정
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('API Post Request'),
         ),
-        body: const Center( // Center 위젯은 자식 위젯을 화면 중앙에 배치
-          child: PostRequestForm(), // PostRequestForm 위젯을 화면 중앙에 배치
+        body: const Center(
+          child: PostRequestForm(),
         ),
       ),
     );
@@ -27,7 +27,7 @@ class PostRequestForm extends StatefulWidget {
   const PostRequestForm({super.key});
 
   @override
-  _PostRequestFormState createState() => _PostRequestFormState(); // 새로운 상태 객체 생성
+  _PostRequestFormState createState() => _PostRequestFormState();
 }
 
 class _PostRequestFormState extends State<PostRequestForm> { // _PostRequestFormState는 PostRequestForm의 상태 표현
